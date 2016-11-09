@@ -1,39 +1,3 @@
-# == Class: beats
-#
-# Full description of class beats here.
-#
-# === Parameters
-#
-# Document parameters here.
-#
-# [*sample_parameter*]
-#   Explanation of what this parameter affects and what it defaults to.
-#   e.g. "Specify one or more upstream ntp servers as an array."
-#
-# === Variables
-#
-# Here you should define a list of variables that this module would require.
-#
-# [*sample_variable*]
-#   Explanation of how this variable affects the funtion of this class and if
-#   it has a default. e.g. "The parameter enc_ntp_servers must be set by the
-#   External Node Classifier as a comma separated list of hostnames." (Note,
-#   global variables should be avoided in favor of class parameters as
-#   of Puppet 2.6.)
-#
-# === Examples
-#
-#  class { 'beats':
-#    servers => [ 'pool.ntp.org', 'ntp.local.company.com' ],
-#  }
-#
-# === Authors
-#
-# Author Name <author@domain.com>
-#
-# === Copyright
-#
-# Copyright 2015 Your name here, unless otherwise noted.
 #
 class beats (
               $srcdir                  = '/usr/local/src',
@@ -83,7 +47,7 @@ class beats (
       #sudo rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch
       exec { 'rpm import gpg eyp-beats repo':
         command => 'rpm --import https://packages.elastic.co/GPG-KEY-elasticsearch',
-        unless  => "bash -c 'rpm -q gpg-pubkey-$(gpg --throw-keyids < GPG-KEY-elasticsearch | grep \"^pub\" | awk \"{ print \\\$2 }\" | cut -f2 -d/ | tr [A-Z] [a-z])'",
+        unless  => "bash -c 'rpm -q gpg-pubkey-$(cat ${srcdir}/GPG-KEY-elasticsearch | gpg --throw-keyids | grep \"^pub\" | awk \"{ print \\\$2 }\" | cut -f2 -d/ | tr [A-Z] [a-z])'",
         require => Exec['wget beats gpgkey'],
       }
 
