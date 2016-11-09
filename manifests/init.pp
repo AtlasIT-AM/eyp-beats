@@ -26,8 +26,6 @@ class beats (
     }
     else
     {
-      # fail('repo install failed: TODO')
-
       exec { 'which wget eyp-beats':
         command => 'which wget',
         unless  => 'which wget',
@@ -70,10 +68,6 @@ class beats (
         gpgkey   => 'https://artifacts.elastic.co/GPG-KEY-elasticsearch',
         require  => Exec['rpm import gpg eyp-beats repo'],
       }
-
     }
-
-
   }
-
 }
