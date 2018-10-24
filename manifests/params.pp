@@ -1,9 +1,17 @@
 class beats::params {
 
+  case $::architecture
+  {
+    'x86_64': { $arch64=true }
+    'amd64': { $arch64=true }
+    default: { $arch64=false }
+  }
+
   case $::osfamily
   {
     'redhat':
     {
+      $sysconfig=true
       $filebeat_paths_default = [
                                   '/var/log/messages',
                                   '/var/log/secure',
@@ -11,32 +19,33 @@ class beats::params {
                                   '/var/log/cron',
                                   '/var/log/maillog',
                                 ]
+      $yumrepo=true
       case $::operatingsystemrelease
       {
         /^[67].*$/:
         {
-          $yumrepo=true
         }
         default: { fail('Unsupported RHEL/CentOS version!')  }
       }
     }
     'Debian':
     {
+      $sysconfig=false
       $filebeat_paths_default = [
                                   '/var/log/auth.log',
                                   '/var/log/syslog',
                                   '/var/log/dpkg.log',
                                   '/var/log/mail.log',
                                 ]
+      $yumrepo=false
       case $::operatingsystem
       {
         'Ubuntu':
         {
           case $::operatingsystemrelease
           {
-            /^14.*$/:
+            /^1[468].*$/:
             {
-              $yumrepo=false
             }
             default: { fail("Unsupported Ubuntu version! - ${::operatingsystemrelease}")  }
           }
